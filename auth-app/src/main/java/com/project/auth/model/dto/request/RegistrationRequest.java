@@ -2,8 +2,8 @@ package com.project.auth.model.dto.request;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.auth.validation.constraints.validator.EmailValidation;
-import com.project.auth.validation.constraints.validator.PasswordValidation;
+import com.project.auth.validation.constraint.validator.EmailValidation;
+import com.project.auth.validation.constraint.validator.PasswordValidation;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
 public class RegistrationRequest {
 
     public RegistrationRequest() {
-        /*
+        /*user_sequence
         Default password
         * */
         this.password = "talibnabi2023";

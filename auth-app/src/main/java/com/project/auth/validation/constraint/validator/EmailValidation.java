@@ -1,4 +1,4 @@
-package com.project.auth.validation.constraints.validator;
+package com.project.auth.validation.constraint.validator;
 
 import com.project.auth.validation.pattern.EmailPattern;
 import jakarta.validation.Constraint;
