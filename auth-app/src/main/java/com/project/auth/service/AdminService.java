@@ -1,4 +1,4 @@
 package com.project.auth.service;
 
-public interface UserService {
+public interface AdminService {
 }

@@ -1,7 +1,7 @@
 package com.project.auth.email.impl;
 
 
-import com.project.auth.email.MainSenderService;
+import com.project.auth.email.MailSenderService;
 import com.project.auth.model.entity.User;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import static com.project.auth.util.JavaMailSenderConstants.*;
 
 @Component
 @RequiredArgsConstructor
-public class MailSenderImpl implements MainSenderService {
+public class MailSenderServiceImpl implements MailSenderService {
     private final JavaMailSender javaMailSender;
 
     @SneakyThrows
@@ -24,6 +24,14 @@ public class MailSenderImpl implements MainSenderService {
         replacedContent = replacedContent.replace(ADMIN_KEY, adminUsername);
         sendEmail(user.getEmail(), replacedContent, SEND_TO_USER_SUBJECT);
     }
+
+    @SneakyThrows
+    @Override
+    public void sendToAdmin(User admin) {
+        String replacedContent = ADMIN_REGISTRATION_CONTENT.replace(ADMIN_KEY, admin.getUsername());
+        sendEmail(admin.getEmail(), replacedContent, SEND_TO_ADMIN_SUBJECT);
+    }
+
 
     @SneakyThrows
     @Override

@@ -1,5 +1,6 @@
 package com.project.auth.service.impl;
 
+import com.project.auth.email.MailSenderService;
 import com.project.auth.error.exception.EmailDuplicateException;
 import com.project.auth.error.exception.PasswordNotMatchedException;
 import com.project.auth.error.exception.UserNotFoundException;
@@ -15,7 +16,6 @@ import com.project.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +31,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtService jwtService;
 
+    private final MailSenderService mailSenderService;
+
 
     /**
      * Registers a new user with the provided registration request data.
@@ -44,8 +46,9 @@ public class AuthServiceImpl implements AuthService {
         usernameDuplicatingChecking(registrationRequest);
         emailDuplicatingChecking(registrationRequest);
         passwordMatchingChecking(registrationRequest);
-        User user = getBuildedUser(registrationRequest);
-        userRepository.save(user);
+        User admin = getBuildedUser(registrationRequest);
+        userRepository.save(admin);
+        mailSenderService.sendToAdmin(admin);
     }
 
     /**
@@ -59,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
     public TokenResponse login(LoginRequest loginRequest) {
         authentication(loginRequest);
         String email = loginRequest.getEmail();
-        User user = findByEmail(email);
+        User user = getUserByEmail(email);
         String jwt = jwtService.generateToken(user);
         TokenResponse token = getToken(jwt);
         return token;
@@ -108,14 +111,14 @@ public class AuthServiceImpl implements AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
     }
 
-    private User findByEmail(String email) {
+    private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with this email."));
+                .orElseThrow(() -> new UserNotFoundException("User not found with this email."));
     }
 
-    private User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException("User not found with this username.")
-        );
+    private User getUserById(Integer userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with this id."));
     }
+
 }
