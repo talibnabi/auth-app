@@ -25,6 +25,13 @@ public class MailSenderServiceImpl implements MailSenderService {
         sendEmail(user.getEmail(), replacedContent, SEND_TO_USER_SUBJECT);
     }
 
+    @Override
+    public String adminToUserMessage(User user, String adminUsername) {
+        String replacedContent = SEND_TO_USER_CONTENT.replace(USER_KEY, user.getUsername());
+        replacedContent = replacedContent.replace(ADMIN_KEY, adminUsername);
+        return replacedContent;
+    }
+
     @SneakyThrows
     @Override
     public void sendToAdmin(User admin) {
@@ -32,6 +39,11 @@ public class MailSenderServiceImpl implements MailSenderService {
         sendEmail(admin.getEmail(), replacedContent, SEND_TO_ADMIN_SUBJECT);
     }
 
+    @Override
+    public String systemToAdminMessage(User admin) {
+        String replacedContent = ADMIN_REGISTRATION_CONTENT.replace(ADMIN_KEY, admin.getUsername());
+        return replacedContent;
+    }
 
     @SneakyThrows
     @Override

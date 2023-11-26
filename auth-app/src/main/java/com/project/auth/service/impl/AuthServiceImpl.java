@@ -1,10 +1,7 @@
 package com.project.auth.service.impl;
 
 import com.project.auth.email.MailSenderService;
-import com.project.auth.error.exception.EmailDuplicateException;
-import com.project.auth.error.exception.PasswordNotMatchedException;
 import com.project.auth.error.exception.UserNotFoundException;
-import com.project.auth.error.exception.UsernameDuplicateException;
 import com.project.auth.model.dto.request.LoginRequest;
 import com.project.auth.model.dto.request.RegistrationRequest;
 import com.project.auth.model.dto.response.TokenResponse;
@@ -13,6 +10,7 @@ import com.project.auth.model.enums.UserRole;
 import com.project.auth.repository.UserRepository;
 import com.project.auth.security.service.JwtService;
 import com.project.auth.service.AuthService;
+import com.project.auth.service.UserCheckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
     private final UserRepository userRepository;
 
     private final AuthenticationManager authenticationManager;
@@ -32,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
 
     private final MailSenderService mailSenderService;
+
+    private final UserCheckService userCheckService;
 
 
     /**
@@ -43,13 +42,16 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public void registration(RegistrationRequest registrationRequest) {
-        usernameDuplicatingChecking(registrationRequest);
-        emailDuplicatingChecking(registrationRequest);
-        passwordMatchingChecking(registrationRequest);
+        userCheckService.usernameDuplicatingChecking(registrationRequest);
+        userCheckService.emailDuplicatingChecking(registrationRequest);
+        userCheckService.passwordMatchingChecking(registrationRequest);
         User admin = getBuildedUser(registrationRequest);
+        String message = mailSenderService.systemToAdminMessage(admin);
+        admin.setMailSendingMessage(message);
         userRepository.save(admin);
         mailSenderService.sendToAdmin(admin);
     }
+
 
     /**
      * Authenticates a user using the provided authentication request.
@@ -66,27 +68,6 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jwtService.generateToken(user);
         TokenResponse token = getToken(jwt);
         return token;
-    }
-
-
-    public void passwordMatchingChecking(RegistrationRequest registerRequest) {
-        if (!registerRequest.isPasswordsMatched()) {
-            throw new PasswordNotMatchedException("User's password not matched.");
-        }
-    }
-
-
-    public void usernameDuplicatingChecking(RegistrationRequest registerRequest) {
-        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            throw new UsernameDuplicateException("You cannot create a new user with the same username.");
-        }
-    }
-
-
-    public void emailDuplicatingChecking(RegistrationRequest registerRequest) {
-        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new EmailDuplicateException("You cannot create a new user with the same email.");
-        }
     }
 
 
@@ -116,9 +97,5 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with this email."));
     }
 
-    private User getUserById(Integer userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with this id."));
-    }
 
 }
