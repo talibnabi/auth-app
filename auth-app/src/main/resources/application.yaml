@@ -1,11 +1,11 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://allinone.cn5daduvgses.us-east-1.rds.amazonaws.com:3306/taskify
-    username: admin
-    password: Admin1234
+    url: #write your url
+    username: #write your username
+    password: #write your password
   jpa:
-    hibernate.ddl-auto: create-drop
+    hibernate.ddl-auto: update
     generate-ddl: true
     show-sql: true
   mail:

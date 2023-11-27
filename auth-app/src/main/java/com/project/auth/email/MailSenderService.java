@@ -8,9 +8,9 @@ public interface MailSenderService {
 
     void sendVerificationCodeToUser(User user, String verificationCode);
 
-    void sendPasswordResetTokenToAdmin(User admin,String resetToken);
+    void sendPasswordResetTokenToAdmin(User admin, String resetToken);
 
-    void sendPasswordResetTokenToUser(User user,String resetToken);
+    void sendPasswordResetTokenToUser(User user, String resetToken);
 
     void sendToUser(User user, String adminUsername);
 

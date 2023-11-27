@@ -1,6 +1,7 @@
 package com.project.auth.util;
 
 public final class SecurityConfigConstants {
+
     private SecurityConfigConstants() {
     }
 
@@ -9,7 +10,7 @@ public final class SecurityConfigConstants {
     public static final String USER_ROLE = "USER";
 
     public static final String[] ADMIN_MATCHER = new String[]{
-            "/api/admin/**"
+            "/api/admin/**", "/api/verification/**", "/api/user/**"
     };
 
     public static final String[] USER_MATCHER = new String[]{
