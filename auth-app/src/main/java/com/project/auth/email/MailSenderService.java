@@ -3,6 +3,9 @@ package com.project.auth.email;
 import com.project.auth.model.entity.User;
 
 public interface MailSenderService {
+
+    void sendVerificationCode(User admin, String verificationCode);
+
     void sendToUser(User user, String adminUsername);
 
     String adminToUserMessage(User user, String adminUsername);
@@ -12,4 +15,5 @@ public interface MailSenderService {
     String systemToAdminMessage(User admin);
 
     void sendEmail(String toAddress, String content, String subject);
+
 }

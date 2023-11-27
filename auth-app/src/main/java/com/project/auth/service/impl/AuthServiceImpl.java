@@ -6,11 +6,14 @@ import com.project.auth.model.dto.request.LoginRequest;
 import com.project.auth.model.dto.request.RegistrationRequest;
 import com.project.auth.model.dto.response.TokenResponse;
 import com.project.auth.model.entity.User;
+import com.project.auth.model.entity.Verification;
 import com.project.auth.model.enums.UserRole;
 import com.project.auth.repository.UserRepository;
+import com.project.auth.repository.VerificationRepository;
 import com.project.auth.security.service.JwtService;
 import com.project.auth.service.AuthService;
 import com.project.auth.service.UserCheckService;
+import com.project.auth.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +23,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     private final UserRepository userRepository;
+
+    private final VerificationRepository verificationRepository;
 
     private final AuthenticationManager authenticationManager;
 
@@ -31,6 +37,8 @@ public class AuthServiceImpl implements AuthService {
     private final MailSenderService mailSenderService;
 
     private final UserCheckService userCheckService;
+
+    private final VerificationService verificationService;
 
 
     /**
@@ -50,6 +58,16 @@ public class AuthServiceImpl implements AuthService {
         admin.setMailSendingMessage(message);
         userRepository.save(admin);
         mailSenderService.sendToAdmin(admin);
+        verificationCodeSending(admin);
+    }
+
+    private void verificationCodeSending(User user) {
+        String generatedVerificationCode = verificationService.generateVerificationCode();
+        Verification verification = new Verification();
+        verification.setUser(user);
+        verification.setVerificationCode(generatedVerificationCode);
+        verificationRepository.save(verification);
+        mailSenderService.sendVerificationCode(user, generatedVerificationCode);
     }
 
 

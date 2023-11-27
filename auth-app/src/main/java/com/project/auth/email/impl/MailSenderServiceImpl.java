@@ -15,7 +15,15 @@ import static com.project.auth.util.JavaMailSenderConstants.*;
 @Component
 @RequiredArgsConstructor
 public class MailSenderServiceImpl implements MailSenderService {
+
     private final JavaMailSender javaMailSender;
+
+    @SneakyThrows
+    @Override
+    public void sendVerificationCode(User admin, String verificationCode) {
+        String replacedContent = ADMIN_REGISTRATION_CONTENT.replace(ADMIN_KEY, admin.getUsername());
+        sendEmail(admin.getEmail(), replacedContent, verificationCode);
+    }
 
     @SneakyThrows
     @Override

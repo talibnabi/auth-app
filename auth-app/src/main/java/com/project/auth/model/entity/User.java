@@ -42,12 +42,16 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "is_verify")
+    private Boolean isVerify;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
     private UserRole userRole;
 
     @Column(name = "mail_sending_message")
     private String mailSendingMessage;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
