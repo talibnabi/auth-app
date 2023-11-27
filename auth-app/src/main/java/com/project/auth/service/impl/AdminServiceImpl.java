@@ -4,10 +4,13 @@ import com.project.auth.email.MailSenderService;
 import com.project.auth.mapper.UserMapper;
 import com.project.auth.model.dto.request.RegistrationRequest;
 import com.project.auth.model.entity.User;
+import com.project.auth.model.entity.Verification;
 import com.project.auth.model.enums.UserRole;
 import com.project.auth.repository.UserRepository;
+import com.project.auth.repository.VerificationRepository;
 import com.project.auth.service.AdminService;
 import com.project.auth.service.UserCheckService;
+import com.project.auth.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +29,8 @@ public class AdminServiceImpl implements AdminService {
     private final MailSenderService mailSenderService;
 
     private final UserCheckService userCheckService;
+
+    private final VerificationService verificationService;
 
 
     /**
@@ -47,7 +52,9 @@ public class AdminServiceImpl implements AdminService {
         User lastUser = getBuildedUser(user, adminUsername, mailSenderService);
         userRepository.save(lastUser);
         mailSenderService.sendToUser(lastUser, adminUsername);
+        verificationService.verificationCodeSending(lastUser);
     }
+
 
     private User getBuildedUser(User user, String usernameAdmin, MailSenderService mailSenderService) {
         UserRole userRole = UserRole.fromId(2);

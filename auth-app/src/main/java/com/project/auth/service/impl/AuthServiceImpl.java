@@ -2,14 +2,13 @@ package com.project.auth.service.impl;
 
 import com.project.auth.email.MailSenderService;
 import com.project.auth.error.exception.UserNotFoundException;
+import com.project.auth.error.exception.UserNotVerifiedException;
 import com.project.auth.model.dto.request.LoginRequest;
 import com.project.auth.model.dto.request.RegistrationRequest;
 import com.project.auth.model.dto.response.TokenResponse;
 import com.project.auth.model.entity.User;
-import com.project.auth.model.entity.Verification;
 import com.project.auth.model.enums.UserRole;
 import com.project.auth.repository.UserRepository;
-import com.project.auth.repository.VerificationRepository;
 import com.project.auth.security.service.JwtService;
 import com.project.auth.service.AuthService;
 import com.project.auth.service.UserCheckService;
@@ -25,8 +24,6 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-
-    private final VerificationRepository verificationRepository;
 
     private final AuthenticationManager authenticationManager;
 
@@ -58,16 +55,7 @@ public class AuthServiceImpl implements AuthService {
         admin.setMailSendingMessage(message);
         userRepository.save(admin);
         mailSenderService.sendToAdmin(admin);
-        verificationCodeSending(admin);
-    }
-
-    private void verificationCodeSending(User user) {
-        String generatedVerificationCode = verificationService.generateVerificationCode();
-        Verification verification = new Verification();
-        verification.setUser(user);
-        verification.setVerificationCode(generatedVerificationCode);
-        verificationRepository.save(verification);
-        mailSenderService.sendVerificationCode(user, generatedVerificationCode);
+        verificationService.verificationCodeSending(admin);
     }
 
 
@@ -83,9 +71,12 @@ public class AuthServiceImpl implements AuthService {
         authentication(loginRequest);
         String email = loginRequest.getEmail();
         User user = getUserByEmail(email);
-        String jwt = jwtService.generateToken(user);
-        TokenResponse token = getToken(jwt);
-        return token;
+        if (user.getIsVerify()) {
+            String jwt = jwtService.generateToken(user);
+            TokenResponse token = getToken(jwt);
+            return token;
+        }
+        throw new UserNotVerifiedException("User is not verified. Please verify your account.");
     }
 
 

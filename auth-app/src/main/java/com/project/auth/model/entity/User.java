@@ -21,7 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user-auth")
+@Table(name = "user_auth")
 public class User extends BaseEntity implements UserDetails, Serializable {
 
     @Serial

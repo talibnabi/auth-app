@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "verification-auth")
+@Table(name = "verification_auth")
 public class Verification extends BaseEntity implements Serializable {
 
     @Serial

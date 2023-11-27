@@ -4,7 +4,13 @@ import com.project.auth.model.entity.User;
 
 public interface MailSenderService {
 
-    void sendVerificationCode(User admin, String verificationCode);
+    void sendVerificationCodeToAdmin(User admin, String verificationCode);
+
+    void sendVerificationCodeToUser(User user, String verificationCode);
+
+    void sendPasswordResetTokenToAdmin(User admin,String resetToken);
+
+    void sendPasswordResetTokenToUser(User user,String resetToken);
 
     void sendToUser(User user, String adminUsername);
 

@@ -20,10 +20,30 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     @SneakyThrows
     @Override
-    public void sendVerificationCode(User admin, String verificationCode) {
+    public void sendVerificationCodeToAdmin(User admin, String verificationCode) {
         String replacedContent = ADMIN_REGISTRATION_CONTENT.replace(ADMIN_KEY, admin.getUsername());
         sendEmail(admin.getEmail(), replacedContent, verificationCode);
     }
+
+    @SneakyThrows
+    @Override
+    public void sendVerificationCodeToUser(User user, String verificationCode) {
+        String replacedContent = USER_REGISTRATION_CONTENT.replace(USER_KEY, user.getUsername());
+        sendEmail(user.getEmail(), replacedContent, verificationCode);
+    }
+
+    @Override
+    public void sendPasswordResetTokenToAdmin(User admin, String resetToken) {
+        String replacedContent = ADMIN_PASSWORD_RESET_TOKEN.replace(ADMIN_KEY, admin.getUsername());
+        sendEmail(admin.getEmail(), replacedContent, resetToken);
+    }
+
+    @Override
+    public void sendPasswordResetTokenToUser(User user, String resetToken) {
+        String replacedContent = USER_PASSWORD_RESET_TOKEN.replace(USER_KEY, user.getUsername());
+        sendEmail(user.getEmail(), replacedContent, resetToken);
+    }
+
 
     @SneakyThrows
     @Override

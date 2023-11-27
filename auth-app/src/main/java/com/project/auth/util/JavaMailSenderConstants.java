@@ -10,11 +10,18 @@ public class JavaMailSenderConstants {
             + "You have been registered by admin.<br>"
             + "Your admin is: [[ADMIN_KEY]].<br>"
             + "Please,ask the credentials from your admin.<br>"
-            + "Thank you,<br>";
+            + "Thank you.<br>";
 
     public static final String ADMIN_REGISTRATION_CONTENT = "Hi,admin [[ADMIN_KEY]],<br>"
-            + "You have registered successfully.<br>"
-            + "Thank you.<br>";
+            + "Your verification code: ";
+    public static final String USER_REGISTRATION_CONTENT = "Hi,user [[USER_KEY]],<br>"
+            + "Your verification code: ";
+
+    public static final String ADMIN_PASSWORD_RESET_TOKEN = "Hi,admin [[ADMIN_KEY]],<br>"
+            + "Your token for reset password: ";
+
+    public static final String USER_PASSWORD_RESET_TOKEN = "Hi,user [[USER_KEY]],<br>"
+            + "Your token for reset password: ";
 
     public static final String SEND_TO_USER_SUBJECT = "Welcome!";
 
